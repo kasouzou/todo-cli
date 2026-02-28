@@ -28,47 +28,6 @@ OSに合わせて以下のコマンドを実行してください。
 インストール後、GitHub アカウントでログインする必要があります。
 ```bash
 gh auth login
-
-GitHub CLI（`gh`）のセットアップは、このツールを動かすための「心臓部」だね！そこが抜けていると初心者が迷っちゃうから、インストールから認証までを網羅したプロ仕様の `README.md` を作成したよ。
-
-これをそのままリポジトリのトップに置けば、誰でもすぐに使い始められるはず！
-
----
-
-### 公開用 README.md (完全版)
-
-```markdown
-# todo-cli
-
-`todo` は、[GitHub CLI (gh)](https://cli.github.com/) をラップして、特定の GitHub リポジトリやプロジェクトの Issue 管理を爆速にするシェルスクリプトです。
-
----
-
-## 1. 前提条件 (GitHub CLI のセットアップ)
-
-このツールは内部で **GitHub CLI (`gh`)** を使用します。まだインストールしていない場合は、以下の手順でセットアップを完了させてください。
-
-### インストール
-OSに合わせて以下のコマンドを実行してください。
-
-* **macOS**:
-    ```bash
-    brew install gh
-    ```
-* **Linux (Debian/Ubuntu系)**:
-    ```bash
-    sudo apt update && sudo apt install gh
-    ```
-* **Windows (PowerShell/Winget)**:
-    ```bash
-    winget install --id GitHub.cli
-    ```
-
-### 認証 (必須)
-インストール後、GitHub アカウントでログインする必要があります。
-```bash
-gh auth login
-
 ```
 
 > **Note**: プロンプトに従ってブラウザ経由またはトークンで認証を完了させてください。`gh issue list` などのコマンドが正常に動くようになれば準備完了です。
