@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+
+# 概要: GitHub CLI (gh) を使用して任意のプロジェクト管理 Issue 操作を簡略化するスクリプト
+# -----------------------------------------------------------------------------
+
+# 環境変数から設定を読み込む（設定されていない場合は空）
+REPO="${TODO_REPO}"
+PROJECT="${TODO_PROJECT}"
+
+# ヘルプメッセージを表示する関数
+show_help() {
+    cat << EOF
+'todo' - GitHub Issue CLI Wrapper
+
+GitHub CLI (gh) をラップして、特定のプロジェクト管理を効率化します。
+※環境変数 TODO_REPO と TODO_PROJECT の設定が必要です。
+
+使用法:
+  todo <オプション>
+
+オプション:
+  -c          Issueを新規作成します。
+              (対話モードが起動します)
+
+  -l          Issueの一覧をすべて表示します。
+              (Open / Closed 両方のステータスを表示)
+
+  -lo         未完了 (Open) のIssueのみを表示します。
+              ('todo -l -o' という形式でも実行可能です)
+
+  -lc         完了済 (Closed) のIssueのみを表示します。
+              ('todo -l -c' という形式でも実行可能です)
+
+  -done [ID..] 指定した複数のIssueを一括でクローズします。
+
+  -h, --help  このヘルプを表示します。
+
+設定例 (.bashrc や .zshrc に追記):
+  export TODO_REPO="your-user/your-repo"
+  export TODO_PROJECT="Your Project Name"
+EOF
+}
+
+# 設定チェック関数
+check_env() {
+    if [[ -z "$REPO" ]]; then
+        echo "エラー: 環境変数 TODO_REPO が設定されていません。"
+        echo "export TODO_REPO=\"ユーザー名/リポジトリ名\" を設定してください。"
+        exit 1
+    fi
+}
+
+# 引数がない場合のヘルプ
+if [ $# -eq 0 ]; then
+    show_help
+    exit 1
+fi
+
+# オプション解析
+case "$1" in
+    "-h"|"--help")
+        show_help
+        exit 0
+        ;;
+    "-c")
+        check_env
+        # Issue作成 (プロジェクト指定あり)
+        # 実行コマンドの可視化
+        echo ">>> Executing: gh issue create -R \"$REPO\" ${PROJECT:+--project \"$PROJECT\"}"
+        gh issue create -R "$REPO" ${PROJECT:+--project "$PROJECT"}
+        ;;
+    "-l"|"-lo"|"-lc")
+        check_env
+        # Issue一覧表示の処理
+        STATUS="all"
+        if [[ "$1" == "-lo" || "$2" == "-o" ]]; then
+            STATUS="open"
+        elif [[ "$1" == "-lc" || "$2" == "-c" ]]; then
+            STATUS="closed"
+        fi
+
+        # 実行コマンドの可視化
+        echo ">>> Executing: gh issue list -R \"$REPO\" -s \"$STATUS\""
+        gh issue list -R "$REPO" -s "$STATUS"
+        ;;
+    "-done")
+        check_env
+        shift
+        if [ $# -eq 0 ]; then
+            echo "エラー: クローズするIssue番号を指定してください。"
+            exit 1
+        fi
+        echo ">>> Executing: gh issue close $@ -R \"$REPO\""
+        gh issue close "$@" -R "$REPO"
+        ;;
+    *)
+        echo "エラー: 無効なオプションです: $1"
+        echo ""
+        show_help
+        exit 1
+# case文の終わり
+esac
+
