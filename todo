@@ -90,8 +90,12 @@ case "$1" in
             echo "エラー: クローズするIssue番号を指定してください。"
             exit 1
         fi
-        echo ">>> Executing: gh issue close $@ -R \"$REPO\""
-        gh issue close "$@" -R "$REPO"
+        
+        # 複数のIDをループで処理するように修正
+        for id in "$@"; do
+            echo ">>> Executing: gh issue close $id -R \"$REPO\""
+            gh issue close "$id" -R "$REPO"
+        done
         ;;
     *)
         echo "エラー: 無効なオプションです: $1"
@@ -100,4 +104,3 @@ case "$1" in
         exit 1
 # case文の終わり
 esac
-
