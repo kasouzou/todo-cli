@@ -67,7 +67,7 @@ export TODO_PROJECT="Your Project Name"
 
 ```
 
-設定を反映させるのを忘れないでね！
+設定を反映させるのを忘れないようにしてください！
 
 ```bash
 source ~/.zshrc  # zshの場合
